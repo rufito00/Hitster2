@@ -14,11 +14,35 @@ button{width:100%;margin-top:22px;padding:16px;border:0;border-radius:14px;backg
 #status{min-height:20px;margin-top:16px;color:#aaa;font-size:14px}.error{color:#ff7070!important}
 .answer{display:none;margin-top:22px}.answer.show{display:block}.year{font-size:42px;font-weight:800;color:#1db954}.title{font-size:21px;font-weight:700;margin-top:5px}.artist{color:#aaa;margin-top:4px}
 </style>
+
+
 </head>
 <body>
+
+<div id="ht-home">
+<h1>🎵 HITSTER</h1>
+<div class="ht-label">ELIGE PLAYLIST</div>
+<div id="ht-playlists"></div>
+<button id="ht-all" class="ht-btn">⚫ TODAS LAS PLAYLISTS</button>
+<div id="ht-selected" class="ht-small">Playlist seleccionada: Todas</div>
+<div class="ht-label">MODO DE JUEGO</div>
+<button id="ht-random" class="ht-btn">🎲 CANCIÓN ALEATORIA</button>
+<button id="ht-number" class="ht-btn">🔢 SACAR NÚMERO</button>
+<button id="ht-artist" class="ht-btn">🎤 ADIVINA EL ARTISTA</button>
+<button id="ht-song" class="ht-btn">🎵 ADIVINA LA CANCIÓN</button>
+<button id="ht-streak" class="ht-btn">🔥 RACHA</button>
+</div>
+<div id="ht-game">
+<h1 id="ht-mode">🎲 Juego</h1><div id="ht-info" class="ht-small"></div>
+<div id="ht-disc" class="ht-disc"><div id="ht-icon">▶</div><div id="ht-hint" class="ht-small">Cargando...</div></div>
+<div id="ht-status" class="ht-small"></div>
+<button id="ht-reveal" class="ht-btn">🔍 REVELAR</button>
+<div id="ht-answer" class="ht-answer"><div id="ht-year" class="ht-year"></div><div id="ht-song-title" class="ht-title"></div><div id="ht-song-artist" class="ht-artist"></div></div>
+<button id="ht-next" class="ht-btn">➡️ SIGUIENTE</button><button id="ht-back" class="ht-btn">⬅️ VOLVER</button>
+</div>
 <div class="card">
 <div class="disc" id="disc"><div class="icon" id="icon">▶</div><div class="hint" id="hint">Cargando carta...</div></div>
-<button id="reveal" disabled>🔍 Revelar</button>
+<button id="reveal">🔍 Revelar</button>
 <div id="status"></div>
 <div class="answer" id="answer"><div class="year" id="year"></div><div class="title" id="title"></div><div class="artist" id="artist"></div></div>
 </div>
@@ -45,6 +69,7 @@ async function getSong(){
  document.getElementById("year").textContent=song.year;
  document.getElementById("title").textContent=song.title;
  document.getElementById("artist").textContent=song.artist;
+ reveal.disabled=false;
 }
 
 async function deezer(){
@@ -118,8 +143,8 @@ disc.onclick=async()=>{
 };
 audio.onended=()=>{playing=false;disc.classList.remove("playing");icon.textContent="▶";hint.textContent="Toca para volver a escuchar"};
 audio.onerror=()=>{status.textContent="La fuente de audio no permite reproducir este preview.";status.className="error";playing=false;disc.classList.remove("playing")};
-reveal.onclick=()=>{answer.classList.add("show");reveal.disabled=true};
+reveal.onclick=()=>{answer.classList.add("show");reveal.disabled=false};
 init();
 </script>
-</body>
-</html>
+
+</body></html>
