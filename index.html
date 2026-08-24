@@ -22,15 +22,15 @@ button{width:100%;margin-top:22px;padding:16px;border:0;border-radius:14px;backg
 #ht-home .ht-pl{background:#252536}.ht-pl.selected{outline:3px solid #fff}
 .ht-small{color:#aaa;font-size:13px;margin:10px 0}
 #ht-game{display:none;width:min(92%,460px);margin:0 auto;text-align:center}
-#ht-game .ht-answer{display:none;margin-top:18px}#ht-game .ht-answer.show{display:block!important}
+#ht-game .ht-answer{display:none;margin-top:18px}.ht-answer.show{display:block}
 #ht-game .ht-year{font-size:44px;font-weight:800}
 #ht-game .ht-title{font-size:21px;font-weight:700}.ht-artist{color:#aaa;margin-top:4px}
 #ht-game .ht-disc{width:200px;height:200px;margin:16px auto;border-radius:50%;background:repeating-radial-gradient(circle,#3a3a3a 0 2px,#181818 3px 8px);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
 </style>
-</head>
+<style>#ht-home,#ht-game{display:none!important}</style></head>
 <body>
 
-<div id="ht-home">
+<div id="ht-home" style="display:none">
 <h1>🎵 HITSTER</h1>
 <div class="ht-label">ELIGE PLAYLIST</div>
 <div id="ht-playlists"></div>
@@ -43,7 +43,7 @@ button{width:100%;margin-top:22px;padding:16px;border:0;border-radius:14px;backg
 <button id="ht-song" class="ht-btn">🎵 ADIVINA LA CANCIÓN</button>
 <button id="ht-streak" class="ht-btn">🔥 RACHA</button>
 </div>
-<div id="ht-game">
+<div id="ht-game" style="display:none">
 <h1 id="ht-mode">🎲 Juego</h1><div id="ht-info" class="ht-small"></div>
 <div id="ht-disc" class="ht-disc"><div id="ht-icon">▶</div><div id="ht-hint" class="ht-small">Cargando...</div></div>
 <div id="ht-status" class="ht-small"></div>
@@ -239,13 +239,12 @@ document.getElementById("ht-random").onclick=()=>start("random");document.getEle
 document.getElementById("ht-artist").onclick=()=>start("artist");document.getElementById("ht-song").onclick=()=>start("song");
 document.getElementById("ht-streak").onclick=()=>{streak=0;start("streak");};
 document.getElementById("ht-disc").onclick=async()=>{if(!preview)return;try{if(audio.paused){await audio.play();document.getElementById("ht-icon").textContent="🔊";}else{audio.pause();document.getElementById("ht-icon").textContent="▶";}}catch(e){}};
-document.getElementById("ht-reveal").onclick=function(e){
- e.preventDefault();
- if(!current){document.getElementById("ht-status").textContent="No hay canción seleccionada.";return;}
- document.getElementById("ht-year").textContent=current.year||currentYear||"AÑO NO ENCONTRADO";
- document.getElementById("ht-song-title").textContent=current.title||"";
- document.getElementById("ht-song-artist").textContent=current.artist||"";
- document.getElementById("ht-answer").classList.add("show");
+document.getElementById("ht-reveal").onclick=function(){
+  if(!current){ return; }
+  document.getElementById("ht-year").textContent = current.year || currentYear || "AÑO NO ENCONTRADO";
+  document.getElementById("ht-song-title").textContent = current.title || "";
+  document.getElementById("ht-song-artist").textContent = current.artist || "";
+  document.getElementById("ht-answer").classList.add("show");
 };
 document.getElementById("ht-next").onclick=()=>{if(mode==="streak"){streak++;document.getElementById("ht-mode").textContent="🔥 Racha: "+streak;}round();};
 document.getElementById("ht-back").onclick=()=>{audio.pause();document.getElementById("ht-game").style.display="none";document.getElementById("ht-home").style.display="block";};
