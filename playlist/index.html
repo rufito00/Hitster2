@@ -14,7 +14,7 @@
 .ht-breakdown summary::-webkit-details-marker{display:none}
 
 
-.ht-song-row span{grid-row:1/3;color:#888}.ht-song-row strong{font-size:13px}.ht-song-row small{font-size:12px;color:#aaa}</style></head><body>
+</style></head><body>
 <div id="ht-home"><h1>🎵 HITSTER — PLAYLISTS</h1><div class="ht-label">ELIGE PLAYLIST</div><div id="ht-playlists"></div><button id="ht-all" class="ht-btn">⚫ TODAS LAS PLAYLISTS</button><div id="ht-selected" class="ht-small">Playlist seleccionada: Todas</div><div class="ht-label">MODO DE JUEGO</div><button id="ht-random" class="ht-btn">🎲 CANCIÓN ALEATORIA</button><button id="ht-number" class="ht-btn">🔢 SACAR NÚMERO</button><button id="ht-artist" class="ht-btn">🎤 ADIVINA EL ARTISTA</button><button id="ht-song" class="ht-btn">🎵 ADIVINA LA CANCIÓN</button><button id="ht-streak" class="ht-btn">🔥 RACHA</button></div>
 <div id="ht-game"><h1 id="ht-mode">🎲 Juego</h1><div id="ht-info" class="ht-small"></div><div id="ht-disc" class="ht-disc"><div id="ht-icon">▶</div><div id="ht-hint" class="ht-small">Cargando...</div></div><div id="ht-status" class="ht-small"></div><button id="ht-reveal" class="ht-btn">🔍 REVELAR</button><div id="ht-answer" class="ht-answer"><div id="ht-year" class="ht-year"></div><div id="ht-song-title" class="ht-title"></div><div id="ht-song-artist" class="ht-artist"></div></div><button id="ht-next" class="ht-btn">➡️ SIGUIENTE</button><button id="ht-back" class="ht-btn">⬅️ VOLVER</button></div><audio id="audio" preload="auto" playsinline></audio>
 <script>var audio=document.getElementById("audio");
@@ -29,22 +29,7 @@ Object.keys(PLAYLISTS).forEach(name=>{
  b.textContent="🎵 "+name+" ("+PLAYLISTS[name].length+")";
  b.onclick=()=>{selected=name;document.querySelectorAll(".ht-pl").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");document.getElementById("ht-selected").textContent="Playlist seleccionada: "+name+" · "+PLAYLISTS[name].length+" canciones";};
  box.appendChild(b);
- const details=document.createElement("details");
- details.className="ht-breakdown";
- const summary=document.createElement("summary");
- summary.textContent="📋 Ver canciones ("+PLAYLISTS[name].length+")";
- details.appendChild(summary);
- const list=document.createElement("div");
- list.className="ht-song-list";
- PLAYLISTS[name].forEach((s,i)=>{
-  const row=document.createElement("div");
-  row.className="ht-song-row";
-  row.innerHTML="<span>"+(i+1)+".</span><strong>"+(s.title||"")+"</strong><small>"+(s.artist||"")+"</small>";
-  list.appendChild(row);
  });
- details.appendChild(list);
- box.appendChild(details);
-});
 document.getElementById("ht-all").onclick=()=>{selected=null;document.querySelectorAll(".ht-pl").forEach(x=>x.classList.remove("selected"));document.getElementById("ht-selected").textContent="Playlist seleccionada: Todas";};
 function pool(){return selected?PLAYLISTS[selected]:Object.values(PLAYLISTS).flat();}
 function pick(){const a=pool();return a[Math.floor(Math.random()*a.length)];}
@@ -113,13 +98,25 @@ document.getElementById("ht-random").onclick=()=>start("random");document.getEle
 document.getElementById("ht-artist").onclick=()=>start("artist");document.getElementById("ht-song").onclick=()=>start("song");
 document.getElementById("ht-streak").onclick=()=>{streak=0;start("streak");};
 document.getElementById("ht-disc").onclick=async()=>{if(!preview)return;try{if(audio.paused){await audio.play();document.getElementById("ht-icon").textContent="🔊";}else{audio.pause();document.getElementById("ht-icon").textContent="▶";}}catch(e){}};
-document.getElementById("ht-reveal").onclick=function(){
- if(!current){document.getElementById("ht-status").textContent="Primero pulsa CANCIÓN ALEATORIA.";return;}
- document.getElementById("ht-year").textContent=current.year||currentYear||"AÑO NO ENCONTRADO";
- document.getElementById("ht-song-title").textContent=current.title||"";
- document.getElementById("ht-song-artist").textContent=current.artist||"";
- document.getElementById("ht-answer").classList.add("show");
+
+window.hitsterRevealNow=function(){
+  var c=window.__hitsterCurrent || (typeof current!=="undefined" ? current : null);
+  if(!c){
+    var st=document.getElementById("ht-status");
+    if(st) st.textContent="Primero pulsa CANCIÓN ALEATORIA.";
+    return false;
+  }
+  var y=document.getElementById("ht-year");
+  var t=document.getElementById("ht-song-title");
+  var a=document.getElementById("ht-song-artist");
+  var ans=document.getElementById("ht-answer");
+  if(y) y.textContent=c.year || (typeof currentYear!=="undefined" ? currentYear : "") || "AÑO NO ENCONTRADO";
+  if(t) t.textContent=c.title || "";
+  if(a) a.textContent=c.artist || "";
+  if(ans){ ans.style.setProperty("display","block","important"); ans.classList.add("show"); }
+  return false;
 };
+document.getElementById("ht-reveal").onclick=function(e){ e.preventDefault(); return window.hitsterRevealNow(); };
 document.getElementById("ht-next").onclick=()=>{if(mode==="streak"){streak++;document.getElementById("ht-mode").textContent="🔥 Racha: "+streak;}round();};
 document.getElementById("ht-back").onclick=()=>{audio.pause();document.getElementById("ht-game").style.display="none";document.getElementById("ht-home").style.display="block";};
 })();
