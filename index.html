@@ -47,7 +47,7 @@ button{width:100%;margin-top:22px;padding:16px;border:0;border-radius:14px;backg
 <h1 id="ht-mode">🎲 Juego</h1><div id="ht-info" class="ht-small"></div>
 <div id="ht-disc" class="ht-disc"><div id="ht-icon">▶</div><div id="ht-hint" class="ht-small">Cargando...</div></div>
 <div id="ht-status" class="ht-small"></div>
-<button id="ht-reveal" class="ht-btn" type="button">🔍 REVELAR</button>
+<button id="ht-reveal" class="ht-btn">🔍 REVELAR</button>
 <div id="ht-answer" class="ht-answer"><div id="ht-year" class="ht-year"></div><div id="ht-song-title" class="ht-title"></div><div id="ht-song-artist" class="ht-artist"></div></div>
 <button id="ht-next" class="ht-btn">➡️ SIGUIENTE</button><button id="ht-back" class="ht-btn">⬅️ VOLVER</button>
 </div>
@@ -217,7 +217,7 @@ async function getPreview(s){
  if(x)return x.previewUrl;throw new Error("Sin preview");
 }
 async function round(){
- current=pick();window.__hitsterCurrent=current;preview=null;currentYear="";window.__hitsterYear="";audio.pause();
+ current=pick();preview=null;currentYear="";audio.pause();
  document.getElementById("ht-answer").classList.remove("show");document.getElementById("ht-reveal").disabled=false;
  document.getElementById("ht-status").textContent="Buscando canción...";
  document.getElementById("ht-hint").textContent="Cargando...";
@@ -225,7 +225,7 @@ async function round(){
   // Year and preview are independent: a Deezer preview can never prevent the year from being obtained.
   const results=await Promise.allSettled([getPreview(current),getYear(current)]);
   preview=results[0].status==="fulfilled"?results[0].value:null;
-  currentYear=results[1].status==="fulfilled"?results[1].value:"";window.__hitsterYear=currentYear;
+  currentYear=results[1].status==="fulfilled"?results[1].value:"";
   if(preview){audio.src=preview;audio.load();document.getElementById("ht-hint").textContent="Toca para escuchar";document.getElementById("ht-status").textContent="";}
   else document.getElementById("ht-status").textContent="No hay preview para esta canción. Pulsa siguiente.";
   document.getElementById("ht-reveal").disabled=false;
@@ -239,29 +239,17 @@ document.getElementById("ht-random").onclick=()=>start("random");document.getEle
 document.getElementById("ht-artist").onclick=()=>start("artist");document.getElementById("ht-song").onclick=()=>start("song");
 document.getElementById("ht-streak").onclick=()=>{streak=0;start("streak");};
 document.getElementById("ht-disc").onclick=async()=>{if(!preview)return;try{if(audio.paused){await audio.play();document.getElementById("ht-icon").textContent="🔊";}else{audio.pause();document.getElementById("ht-icon").textContent="▶";}}catch(e){}};
-window.hitsterRevealNow=function(){
-  var c=window.__hitsterCurrent;
-  if(!c){ return false; }
-  var answer=document.getElementById("ht-answer");
-  document.getElementById("ht-year").textContent=c.year || window.__hitsterYear || "AÑO NO ENCONTRADO";
-  document.getElementById("ht-song-title").textContent=c.title || "";
-  document.getElementById("ht-song-artist").textContent=c.artist || "";
-  answer.style.display="block";
-  answer.classList.add("show");
-  return false;
+document.getElementById("ht-reveal").onclick=function(e){
+ e.preventDefault();
+ if(!current){document.getElementById("ht-status").textContent="No hay canción seleccionada.";return;}
+ document.getElementById("ht-year").textContent=current.year||currentYear||"AÑO NO ENCONTRADO";
+ document.getElementById("ht-song-title").textContent=current.title||"";
+ document.getElementById("ht-song-artist").textContent=current.artist||"";
+ document.getElementById("ht-answer").classList.add("show");
 };
 document.getElementById("ht-next").onclick=()=>{if(mode==="streak"){streak++;document.getElementById("ht-mode").textContent="🔥 Racha: "+streak;}round();};
 document.getElementById("ht-back").onclick=()=>{audio.pause();document.getElementById("ht-game").style.display="none";document.getElementById("ht-home").style.display="block";};
-document.getElementById("ht-reveal").addEventListener("click",function(e){
- e.preventDefault();
- var c=window.__hitsterCurrent;
- if(!c){ document.getElementById("ht-status").textContent="No hay canción seleccionada."; return; }
- document.getElementById("ht-year").textContent=c.year||window.__hitsterYear||"AÑO NO ENCONTRADO";
- document.getElementById("ht-song-title").textContent=c.title||"";
- document.getElementById("ht-song-artist").textContent=c.artist||"";
- document.getElementById("ht-answer").classList.add("show");
-});
 })();
 </script>
-<script>window.hitsterRevealNow=window.hitsterRevealNow||function(){var c=window.__hitsterCurrent;if(!c)return false;document.getElementById("ht-year").textContent=c.year||window.__hitsterYear||"AÑO NO ENCONTRADO";document.getElementById("ht-song-title").textContent=c.title||"";document.getElementById("ht-song-artist").textContent=c.artist||"";var a=document.getElementById("ht-answer");a.style.display="block";a.classList.add("show");return false;};</script></body>
+</body>
 </html>
