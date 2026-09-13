@@ -1,205 +1,307 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hitster — Lista 600</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hitster - Lista 600</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#10101a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.card{width:min(92%,420px);padding:30px 24px;border:1px solid #29293a;border-radius:24px;background:#171722;text-align:center;box-shadow:0 20px 60px #0008}
-h1{font-size:25px;margin:0 0 18px}
-.sub{color:#aaa;font-size:14px;margin-bottom:18px}
-.disc{width:200px;height:200px;margin:auto;border-radius:50%;background:repeating-radial-gradient(circle,#3a3a3a 0 2px,#181818 3px 8px);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
-.playing{animation:spin 6s linear infinite}
+body{margin:0;background:#111;color:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center}
+.container{width:min(94%,430px);background:#1b1b1b;border-radius:24px;padding:24px;text-align:center;box-shadow:0 10px 40px #000}
+h1{margin:0 0 8px;font-size:28px}
+.subtitle{color:#aaa;margin-bottom:22px}
+button{display:block;width:100%;border:0;border-radius:14px;padding:15px;margin:10px 0;font-size:16px;font-weight:bold;cursor:pointer;background:#333;color:#fff}
+button:active{transform:scale(.98)}
+.primary{background:#1db954!important;color:#071007!important}
+.categoryBtn{background:#292929}
+#homeCategory{min-height:50px;display:flex;align-items:center;justify-content:center;margin:5px 0;font-size:20px;font-weight:bold}
+.category{display:inline-block;padding:10px 18px;border-radius:22px;margin:12px 0;font-size:17px;font-weight:bold}
+.green{background:#38d353;color:#071007}
+.yellow{background:#ffd928;color:#171300}
+.pink{background:#ff72ad;color:#21000f}
+.purple{background:#9868ff;color:#fff}
+.blue{background:#3298ff;color:#fff}
+.question{font-size:20px;font-weight:bold;min-height:52px;display:flex;align-items:center;justify-content:center}
+.disc{width:190px;height:190px;border-radius:50%;margin:0 auto 16px;background:repeating-radial-gradient(circle,#444 0 2px,#181818 3px 8px);display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer}
+.spin{animation:spin 5s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.icon{font-size:34px}.hint{font-size:13px;color:#aaa;margin-top:6px}
-button{width:100%;margin-top:14px;padding:15px;border:0;border-radius:14px;background:#303044;color:#fff;font-size:16px;font-weight:700}
-button.primary{background:#1db954;color:#071108}
-button:disabled{opacity:.4}
-#status{min-height:20px;margin-top:16px;color:#aaa;font-size:14px}.error{color:#ff7070!important}
- .category{display:inline-block;margin:16px auto 10px;padding:10px 18px;border-radius:20px;font-size:17px;font-weight:800}
-.home-category{min-height:48px;margin:12px 0;font-size:19px;font-weight:800}
-.question{min-height:48px;font-size:20px;font-weight:700;margin:8px 0 4px}
-.cat-green{background:#39d353;color:#061007}.cat-yellow{background:#ffd928;color:#171300}
-.cat-pink{background:#ff7eb6;color:#21000f}.cat-purple{background:#9b6cff;color:#fff}
-.cat-blue{background:#3298ff;color:#fff}
-.answer{display:none;margin-top:22px}.answer.show{display:block}
-.year{font-size:42px;font-weight:800;color:#1db954}.title{font-size:21px;font-weight:700;margin-top:5px}.artist{color:#aaa;margin-top:4px}
-.hidden{display:none}
+.play{font-size:35px}.hint{font-size:12px;color:#aaa;margin-top:5px}
+.answer{display:none;margin-top:20px;padding:18px;background:#252525;border-radius:16px}
+.answer.show{display:block}
+.year{font-size:40px;font-weight:bold;color:#1db954}
+.title{font-size:21px;font-weight:bold;margin-top:5px}
+.artist{font-size:16px;color:#aaa;margin-top:5px}
+.status{min-height:22px;color:#aaa;font-size:13px;margin:8px 0}
+.error{color:#ff6b6b}
+.hidden{display:none!important}
+.small{font-size:12px;color:#888;margin-top:15px}
 </style>
 </head>
 <body>
-<div class="card">
-  <div id="home">
-    <h1>🎵 HITSTER</h1>
-    <div class="sub">Ruta de 600 canciones conocidas en España</div>
-    <button class="primary" id="randomHome">🎲 CANCIÓN ALEATORIA</button>
-    <button id="categoryHome">🎯 CATEGORÍA ALEATORIA</button>
-    <div id="homeCategory" class="home-category"></div>
-    <button id="qrInfo">📷 JUGAR CON QR</button>
-  </div>
+<div class="container">
 
-  <div id="game" class="hidden">
-    <div class="disc" id="disc">
-      <div class="icon" id="icon">▶</div>
-      <div class="hint" id="hint">Cargando carta...</div>
-    </div>
+<section id="home">
+<h1>🎵 HITSTER</h1>
+<div class="subtitle">Ruta de 600 canciones</div>
 
-    <div id="category" class="category" style="display:none"></div>
-    <div id="question" class="question"></div>
-    <button id="categoryGame">🎯 OTRA CATEGORÍA</button>
-    <button id="reveal" disabled>🔍 Revelar</button>
-    <button id="gameRandom">🎲 OTRA ALEATORIA</button>
-    <button id="back">⬅️ Volver</button>
+<button id="songRandom" class="primary">🎲 CANCIÓN ALEATORIA</button>
 
-    <div id="status"></div>
-    <div class="answer" id="answer">
-      <div class="year" id="year"></div>
-      <div class="title" id="title"></div>
-      <div class="artist" id="artist"></div>
-    </div>
-  </div>
+<button id="categoryRandom" class="categoryBtn">🎯 CATEGORÍA ALEATORIA</button>
+<div id="homeCategory"></div>
+
+<button id="qrHelp" class="categoryBtn">📷 JUGAR CON QR</button>
+<div class="small">Los QR abren directamente una canción.</div>
+</section>
+
+<section id="game" class="hidden">
+<div class="disc" id="disc">
+<div class="play" id="playIcon">▶</div>
+<div class="hint" id="hint">Toca para reproducir</div>
 </div>
 
+<div id="category" class="category hidden"></div>
+<div id="question" class="question"></div>
+
+<button id="categoryAgain" class="categoryBtn">🎯 OTRA CATEGORÍA</button>
+<button id="reveal" disabled>🔍 REVELAR</button>
+<button id="songAgain" class="primary">🎲 OTRA CANCIÓN ALEATORIA</button>
+<button id="back" class="categoryBtn">⬅️ VOLVER</button>
+
+<div id="status" class="status"></div>
+
+<div id="answer" class="answer">
+<div id="answerYear" class="year"></div>
+<div id="answerTitle" class="title"></div>
+<div id="answerArtist" class="artist"></div>
+</div>
+</section>
+
 <audio id="audio" preload="auto" playsinline></audio>
+</div>
 
 <script>
-const ROUTE_FILE="./hitster_600_superconocidas_espana.json";
-const p=new URLSearchParams(location.search);
-const id=(p.get("id")||"").trim().padStart(3,"0");
+const JSON_FILE="./hitster_600_superconocidas_espana.json";
 
-const home=document.getElementById("home");
-const game=document.getElementById("game");
-const randomHome=document.getElementById("randomHome");
-const qrInfo=document.getElementById("qrInfo");
-const gameRandom=document.getElementById("gameRandom");
-const categoryHome=document.getElementById("categoryHome");
-const categoryGame=document.getElementById("categoryGame");
-const back=document.getElementById("back");
-const status=document.getElementById("status");
-const disc=document.getElementById("disc");
-const icon=document.getElementById("icon");
-const hint=document.getElementById("hint");
-const reveal=document.getElementById("reveal");
-const answer=document.getElementById("answer");
-const audio=document.getElementById("audio");
-
-let list=[];
-let song=null;
-let preview=null;
-let playing=false;
-let currentCategory=null;
-const categories=[
- {key:"group",emoji:"💚",name:"Grupo o solista",cls:"cat-green",question:"¿Cuál es el grupo o solista?"},
- {key:"title",emoji:"💛",name:"Título de la canción",cls:"cat-yellow",question:"¿Cuál es el título de la canción?"},
- {key:"exact",emoji:"🩷",name:"Año exacto",cls:"cat-pink",question:"¿En qué año exacto salió la canción?"},
- {key:"decade",emoji:"💜",name:"Año o década",cls:"cat-purple",question:"¿En qué año o década salió la canción?"},
- {key:"plusminus",emoji:"💙",name:"±3 años",cls:"cat-blue",question:"¿En qué año salió? Se acepta ±3 años."}
+const CATEGORIES=[
+ {emoji:"💚",name:"Grupo o solista",color:"green",question:"¿Cuál es el grupo o solista?"},
+ {emoji:"💛",name:"Título de la canción",color:"yellow",question:"¿Cuál es el título de la canción?"},
+ {emoji:"🩷",name:"Año exacto",color:"pink",question:"¿En qué año exacto salió la canción?"},
+ {emoji:"💜",name:"Año o década",color:"purple",question:"¿En qué año o década salió la canción?"},
+ {emoji:"💙",name:"±3 años",color:"blue",question:"¿En qué año salió? Se acepta ±3 años."}
 ];
-function chooseCategory(){
- currentCategory=categories[Math.floor(Math.random()*categories.length)];
- const el=document.getElementById("category");
+
+let songs=[];
+let currentSong=null;
+let currentCategory=null;
+let preview="";
+let playing=false;
+
+const $=id=>document.getElementById(id);
+
+function randomItem(arr){
+ return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function showHome(){
+ $("home").classList.remove("hidden");
+ $("game").classList.add("hidden");
+}
+
+function showGame(){
+ $("home").classList.add("hidden");
+ $("game").classList.remove("hidden");
+}
+
+function selectCategory(){
+ currentCategory=randomItem(CATEGORIES);
+ const el=$("category");
  el.textContent=currentCategory.emoji+" "+currentCategory.name;
- el.className="category "+currentCategory.cls;
- el.style.display="inline-block";
- document.getElementById("question").textContent=currentCategory.question;
+ el.className="category "+currentCategory.color;
+ el.classList.remove("hidden");
+ $("question").textContent=currentCategory.question;
+ $("answer").classList.remove("show");
+ $("reveal").disabled=false;
 }
 
-function chooseHomeCategory(){
- const c=categories[Math.floor(Math.random()*categories.length)];
- const el=document.getElementById("homeCategory");
- el.textContent=c.emoji+" "+c.name;
- el.className="home-category "+c.cls;
+function selectHomeCategory(){
+ const c=randomItem(CATEGORIES);
+ $("homeCategory").textContent=c.emoji+" "+c.name;
+ $("homeCategory").className="category "+c.color;
 }
-async function init(){
-  try{
-    await loadList();
 
-    if(!id){
-      home.classList.remove("hidden");
-      game.classList.add("hidden");
-      return;
-    }
+function openRandomSong(){
+ if(!songs.length)return;
+ const s=randomItem(songs);
+ window.location.href="./?id="+encodeURIComponent(s.id);
+}
 
-    song=list.find(x=>String(x.id).padStart(3,"0")===id);
-    if(!song)throw new Error("No existe la carta "+id);
+function getRequestedId(){
+ return new URLSearchParams(window.location.search).get("id");
+}
 
-    home.classList.add("hidden");
-    game.classList.remove("hidden");
+function normalize(s){
+ return String(s||"").toLowerCase()
+ .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+ .replace(/[^\p{L}\p{N}\s]/gu," ")
+ .replace(/\s+/g," ").trim();
+}
 
-    document.getElementById("year").textContent=song.year;
-    document.getElementById("title").textContent=song.title;
-    document.getElementById("artist").textContent=song.artist;
-
-    status.textContent="Buscando canción...";
-    try{preview=await deezer()}catch(e){console.warn("Deezer:",e);preview=await itunes()}
-
-    audio.src=preview;
-    audio.load();
-    status.textContent="";
-    hint.textContent="Toca para reproducir";
-    reveal.disabled=false;
-  }catch(e){
-    console.error(e);
-    status.textContent=e.message;
-    status.className="error";
-    hint.textContent="No disponible";
+function jsonp(url,timeout=8000){
+ return new Promise((resolve,reject)=>{
+  const cb="cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);
+  const script=document.createElement("script");
+  let finished=false;
+  const timer=setTimeout(()=>finish(null,new Error("timeout")),timeout);
+  function finish(data,error){
+   if(finished)return;
+   finished=true;
+   clearTimeout(timer);
+   delete window[cb];
+   script.remove();
+   error?reject(error):resolve(data);
   }
+  window[cb]=data=>finish(data,null);
+  script.onerror=()=>finish(null,new Error("network"));
+  script.src=url+"&callback="+cb;
+  document.body.appendChild(script);
+ });
 }
 
-disc.onclick=async()=>{
-  if(!preview)return;
-  try{
-    if(!playing){
-      await audio.play();
-      playing=true;
-      disc.classList.add("playing");
-      icon.textContent="🔊";
-      hint.textContent="Sonando...";
-    }else{
-      audio.pause();
-      playing=false;
-      disc.classList.remove("playing");
-      icon.textContent="▶";
-      hint.textContent="Toca para reanudar";
-    }
-  }catch(e){
-    status.textContent="Toca otra vez el disco para iniciar el audio.";
-    status.className="error";
+async function findPreview(){
+ const query=encodeURIComponent(currentSong.artist+" "+currentSong.title);
+
+ try{
+  const d=await jsonp("https://api.deezer.com/search?q="+query+"&limit=25&output=jsonp");
+  const results=(d.data||[]).filter(x=>x.preview);
+  results.sort((a,b)=>{
+   const aa=a.artist&&a.artist.name||"";
+   const ba=b.artist&&b.artist.name||"";
+   const sa=(normalize(a.title)===normalize(currentSong.title)?100:0)+(normalize(aa)===normalize(currentSong.artist)?100:0);
+   const sb=(normalize(b.title)===normalize(currentSong.title)?100:0)+(normalize(ba)===normalize(currentSong.artist)?100:0);
+   return sb-sa;
+  });
+  if(results.length)return results[0].preview;
+ }catch(e){}
+
+ try{
+  const d=await jsonp("https://itunes.apple.com/search?term="+query+"&media=music&entity=song&limit=25&country=ES&lang=es_es");
+  const results=(d.results||[]).filter(x=>x.previewUrl);
+  results.sort((a,b)=>{
+   const sa=(normalize(a.trackName)===normalize(currentSong.title)?100:0)+(normalize(a.artistName)===normalize(currentSong.artist)?100:0);
+   const sb=(normalize(b.trackName)===normalize(currentSong.title)?100:0)+(normalize(b.artistName)===normalize(currentSong.artist)?100:0);
+   return sb-sa;
+  });
+  if(results.length)return results[0].previewUrl;
+ }catch(e){}
+
+ return "";
+}
+
+async function loadGame(){
+ const requested=getRequestedId();
+
+ if(requested===null){
+  showHome();
+  return;
+ }
+
+ const found=songs.find(s=>String(s.id)===String(requested));
+ if(!found){
+  showHome();
+  $("homeCategory").textContent="❌ No existe esa carta.";
+  return;
+ }
+
+ currentSong=found;
+ showGame();
+
+ $("answerYear").textContent=currentSong.year;
+ $("answerTitle").textContent=currentSong.title;
+ $("answerArtist").textContent=currentSong.artist;
+
+ // Category is deliberately NOT selected here.
+ $("category").classList.add("hidden");
+ $("question").textContent="";
+ $("answer").classList.remove("show");
+ $("reveal").disabled=true;
+
+ $("status").textContent="Buscando preview...";
+ preview=await findPreview();
+
+ if(preview){
+  $("audio").src=preview;
+  $("audio").load();
+  $("status").textContent="";
+  $("hint").textContent="Toca para reproducir";
+ }else{
+  $("status").textContent="No se encontró preview de esta canción.";
+  $("status").className="status error";
+  $("hint").textContent="Preview no disponible";
+ }
+}
+
+$("songRandom").addEventListener("click",openRandomSong);
+$("songAgain").addEventListener("click",openRandomSong);
+
+$("categoryRandom").addEventListener("click",function(){
+ selectHomeCategory();
+});
+
+$("categoryAgain").addEventListener("click",function(){
+ selectCategory();
+});
+
+$("reveal").addEventListener("click",function(){
+ $("answer").classList.add("show");
+});
+
+$("back").addEventListener("click",function(){
+ window.location.href="./";
+});
+
+$("qrHelp").addEventListener("click",function(){
+ alert("Escanea uno de los QR de la Ruta 600 para abrir directamente una canción.");
+});
+
+$("disc").addEventListener("click",async function(){
+ if(!preview)return;
+ try{
+  if(playing){
+   $("audio").pause();
+   playing=false;
+   $("disc").classList.remove("spin");
+   $("playIcon").textContent="▶";
+   $("hint").textContent="Pausa";
+  }else{
+   await $("audio").play();
+   playing=true;
+   $("disc").classList.add("spin");
+   $("playIcon").textContent="🔊";
+   $("hint").textContent="Sonando...";
   }
-};
+ }catch(e){}
+});
 
-audio.onended=()=>{
-  playing=false;
-  disc.classList.remove("playing");
-  icon.textContent="▶";
-  hint.textContent="Toca para volver a escuchar";
-};
+$("audio").addEventListener("ended",function(){
+ playing=false;
+ $("disc").classList.remove("spin");
+ $("playIcon").textContent="▶";
+ $("hint").textContent="Toca para reproducir";
+});
 
-audio.onerror=()=>{
-  status.textContent="La fuente de audio no permite reproducir este preview.";
-  status.className="error";
-  playing=false;
-  disc.classList.remove("playing");
-};
-
-reveal.onclick=()=>{
-  answer.classList.add("show");
-  reveal.disabled=true;
-};
-
-randomHome.onclick=randomSong;
-gameRandom.onclick=randomSong;
-categoryHome.onclick=chooseHomeCategory;
-categoryGame.onclick=()=>{
-  chooseCategory();
-  reveal.disabled=false;
-};
-back.onclick=()=>{location.href="./";};
-qrInfo.onclick=()=>alert("Escanea un QR de la Ruta 600 para abrir una canción directamente.");
-
-init();
+fetch(JSON_FILE+"?v="+Date.now(),{cache:"no-store"})
+.then(r=>{
+ if(!r.ok)throw new Error("No se pudo cargar el JSON");
+ return r.json();
+})
+.then(data=>{
+ songs=data;
+ loadGame();
+})
+.catch(err=>{
+ showHome();
+ $("homeCategory").textContent="❌ Error cargando las 600 canciones.";
+});
 </script>
 </body>
 </html>
